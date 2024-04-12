@@ -4,6 +4,7 @@ import asyncio
 
 from TelegramBot.bot_configure import dp
 from handlers import start
+from DataBase.createDB import *
 
 
 def main() -> None:
@@ -12,6 +13,8 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    create_conn()
+
     logger.success('start')
     loop = asyncio.get_event_loop()
 

@@ -1,4 +1,4 @@
-from createDB import cur
+from .createDB import cur, conn
 
 
 def get_data(table_name: str, res_column: str, asnw_column: str, answ_value: any) -> list | int | str:
@@ -30,8 +30,8 @@ def set_data(table_name: str, res_column: str, res_value: any, asnw_column: str,
 
     :return: None
     """
-    cur.execute(f"INSERT INTO {table_name} ({res_column}) VALUES ({res_value}) WHERE {asnw_column} = {answ_value}")
-    cur.commit()
+    cur.execute(f"UPDATE {table_name} SET {res_column} = '{res_value}' WHERE {asnw_column} = {answ_value}")
+    conn.commit()
 
 
 def create_db_user(table_name: str, name: str, chatID: int) -> None:
@@ -43,6 +43,9 @@ def create_db_user(table_name: str, name: str, chatID: int) -> None:
     :param chatID:
     :return:
     """
+    cur.execute(f"SELECT EXISTS(SELECT 1 FROM {table_name} WHERE chatID = {chatID})")
+    exists = cur.fetchone()[0]
 
-    cur.execute(f"INSERT INTO {table_name} (name, chatID) VALUES ({name}, {chatID})")
-    cur.commit()
+    if not exists:
+        cur.execute(f"INSERT INTO {table_name} (name, chatID) VALUES ('{name}', {chatID})")
+        conn.commit()

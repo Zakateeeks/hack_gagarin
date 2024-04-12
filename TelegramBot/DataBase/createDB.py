@@ -1,17 +1,22 @@
 import psycopg2
 import configparser
 
-config = configparser.ConfigParser()
-config.read('../../data.ini')
 
-conn = psycopg2.connect(
-    dbname=config["DB"]["NAME"],
-    user=config["DB"]["USER"],
-    password=config["DB"]["PASSWORD"],
-    host=config["DB"]["HOST"],
-    port=config["DB"]["PORT"]
-)
+def create_conn():
+    config = configparser.ConfigParser()
+    config.read('../data.ini')
 
+    conn = psycopg2.connect(
+        dbname=config["DB"]["NAME"],
+        user=config["DB"]["USER"],
+        password=config["DB"]["PASSWORD"],
+        host=config["DB"]["HOST"],
+        port=config["DB"]["PORT"]
+    )
+    return conn
+
+
+conn = create_conn()
 cur = conn.cursor()
 
 cur.execute("""
@@ -19,5 +24,9 @@ cur.execute("""
         id SERIAL PRIMARY KEY,
         name TEXT,
         chatID INT,
+        login TEXT,
+        pass TEXT
     )
 """)
+
+conn.commit()
