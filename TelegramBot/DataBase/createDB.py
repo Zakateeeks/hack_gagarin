@@ -1,6 +1,5 @@
 import psycopg2
 
-
 conn = psycopg2.connect(
     dbname="название_базы_данных",
     user="пользователь",
