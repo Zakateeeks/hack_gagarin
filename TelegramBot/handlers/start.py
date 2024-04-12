@@ -93,9 +93,9 @@ async def check_login(msg: types.Message, state: FSMContext) -> None:
 
 def start_handler(dp: Dispatcher) -> None:
     """
-    Функция, в которой мы описываем, как вызываются функции для взаимодействия
-    в тг боте
-    """
+     Функция, в которой мы описываем, как вызываются функции для взаимодействия
+     в тг боте
+     """
     dp.register_message_handler(start_message, commands=['start'])
     dp.register_callback_query_handler(get_nickname,
                                        lambda s: s.data == "login")

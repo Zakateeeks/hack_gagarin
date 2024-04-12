@@ -26,8 +26,8 @@ def edit_info() -> InlineKeyboardMarkup:
 
     keyboard = InlineKeyboardMarkup(row_width=1)
     keyboard.add(
-        InlineKeyboardButton(text="Редактировать страницу",
-                             callback_data="edit_page")
+        InlineKeyboardButton(text="Выбрать страницу",
+                             callback_data="choice_page")
     )
 
     return keyboard

@@ -3,12 +3,13 @@ from aiogram import executor
 import asyncio
 
 from TelegramBot.bot_configure import dp
-from handlers import start
+from handlers import start, memoryCode_work
 from DataBase.createDB import *
 
 
 def main() -> None:
     start.start_handler(dp)
+    memoryCode_work.memoryCode_handler(dp)
 
 
 if __name__ == "__main__":
