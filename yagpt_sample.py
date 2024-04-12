@@ -18,6 +18,43 @@ def gpt(auth_headers):
 
     return resp.text
 
+
+def analyzerAgentGpt(auth_headers, prev_result):
+    # Преобразуем строку prev_result в JSON объект
+    prev_result_json = json.loads(prev_result)
+    # Извлекаем текст ответа
+    analyzer_text = prev_result_json['result']['alternatives'][0]['message']['text']
+
+    # Загружаем содержимое body.json
+    with open('body.json', 'r', encoding='utf-8') as f:
+        body_data = json.load(f)
+
+    # Добавляем текст из analyzerAgentGpt в messages body.json
+    user_message = {
+        "role": "user",
+        "text": analyzer_text
+    }
+    body_data['messages'].append(user_message)
+
+    # Конвертируем обновлённый body_data обратно в строку для отправки
+    data = json.dumps(body_data)
+
+    # Отправляем запрос
+    url = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion'
+    resp = requests.post(url, headers=auth_headers, data=data)
+
+    if resp.status_code != 200:
+        raise RuntimeError(
+            'Invalid response received: code: {}, message: {}'.format(
+                resp.status_code, resp.text
+            )
+        )
+
+    return resp.text
+
+
+
+
 if __name__ == "__main__":
     with open('credentials.json', 'r') as f:
         data = json.load(f)
@@ -34,7 +71,12 @@ if __name__ == "__main__":
             'Authorization': f'Api-Key {api_key}',
         }
     else:
-        print ('Please save either an IAM token or an API key into a corresponding `IAM_TOKEN` or `API_KEY` environment variable.')
+        print(
+            'Please save either an IAM token or an API key into a corresponding `IAM_TOKEN` or `API_KEY` environment variable.')
         exit()
 
-    print(gpt(headers))
+    firts_epitafia = gpt(headers)
+    print(firts_epitafia)
+    print('\n')
+    result = analyzerAgentGpt(headers, firts_epitafia)
+    print(result)
