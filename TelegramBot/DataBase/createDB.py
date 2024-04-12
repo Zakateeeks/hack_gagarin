@@ -1,15 +1,12 @@
 import psycopg2
-import configparser
 
-config = configparser.ConfigParser()
-config.read('../../data.ini')
 
 conn = psycopg2.connect(
-    dbname=config["DB"]["NAME"],
-    user=config["DB"]["USER"],
-    password=config["DB"]["PASSWORD"],
-    host=config["DB"]["HOST"],
-    port=config["DB"]["PORT"]
+    dbname="название_базы_данных",
+    user="пользователь",
+    password="пароль",
+    host="хост",
+    port="порт"
 )
 
 cur = conn.cursor()
