@@ -2,7 +2,10 @@ import psycopg2
 import configparser
 
 
-def create_conn():
+def create_conn() -> None:
+    """
+    Тут мы создаём БД
+    """
     config = configparser.ConfigParser()
     config.read('../data.ini')
 
@@ -25,7 +28,8 @@ cur.execute("""
         name TEXT,
         chatID INT,
         login TEXT,
-        pass TEXT
+        pass TEXT,
+        token TEXT
     )
 """)
 

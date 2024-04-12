@@ -2,6 +2,14 @@ import requests
 
 
 def authentication(email: str, password: str) -> str:
+    """
+    Аутинификация с помощью API на сайте Код Памяти
+
+    :param email: почта-логин пользователя
+    :param password: пароль пользователя
+    :return: Токен какой-то
+    """
+
     URL = "https://mc.dev.rand.agency/api/v1/get-access-token"
 
     headers = {
@@ -23,4 +31,4 @@ def authentication(email: str, password: str) -> str:
     else:
         # Обработка ошибок
         print("Ошибка при авторизации. Код ошибки:", response.status_code)
-        return response.text
+        return None
