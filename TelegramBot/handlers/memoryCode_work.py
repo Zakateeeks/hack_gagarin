@@ -54,7 +54,7 @@ async def person_choice(msg: types.Message, state: FSMContext) -> None:
     token = base_workDB.get_data("users", 'token',
                                  'chatID', msg.chat.id)[0][0]
 
-    text = personal_info.get_full_info(token, num_page-1)
+    text = personal_info.get_full_info(token, num_page - 1)
 
     if text is None:
         text = "Страница не найдена"
@@ -74,7 +74,8 @@ async def edit_person_info(msg: types.Message) -> None:
     :param msg: Объект сообщения (callback)
     """
 
-    await bot.send_message("123")
+    await msg.message.edit_text(text=msg.message.text, reply_markup=None)
+    await bot.send_message(text="Выберите как Вы хотите заполнить текущую страницу",chat_id=msg.message.chat.id, reply_markup=memoryCode_keyboards.choice_method())
 
 
 def memoryCode_handler(dp: Dispatcher) -> None:
