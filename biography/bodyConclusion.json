@@ -1,0 +1,14 @@
+{
+    "modelUri": "gpt://b1gu7e6h3d9j6nhp9nmt/yandexgpt/latest",
+    "completionOptions": {
+      "stream": false,
+      "temperature": 0.6,
+      "maxTokens": "2000"
+    },
+    "messages": [
+      {
+        "role": "system",
+        "text": "Ты - профессиональный составитель заключений в биографиях. Твоя цель: На основе данной тебе биографии, реализуй полноценное заключение для этой биографии"
+      }
+    ]
+}
