@@ -49,8 +49,15 @@ async def person_choice(msg: types.Message, state: FSMContext) -> None:
     """
     data = await state.get_data()
     sent_message_id = data.get("sent_message_id")
+    num_page = int(msg.text)
+    base_workDB.set_data('users', 'page', num_page, 'chatID', msg.chat.id)
+    token = base_workDB.get_data("users", 'token',
+                                 'chatID', msg.chat.id)[0][0]
 
-    text = f"Выбранная станица: {msg.text}\n"
+    text = personal_info.get_full_info(token, num_page-1)
+
+    if text is None:
+        text = "Страница не найдена"
 
     await msg.delete()
     sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
@@ -66,6 +73,7 @@ async def edit_person_info(msg: types.Message) -> None:
 
     :param msg: Объект сообщения (callback)
     """
+
     await bot.send_message("123")
 
 
@@ -77,4 +85,4 @@ def memoryCode_handler(dp: Dispatcher) -> None:
     dp.register_callback_query_handler(choice_page,
                                        lambda s: s.data == "choice_page")
     dp.register_message_handler(person_choice, state="person_choice")
-    dp.register_callback_query_handler(edit_person_info, callback="edit_person")
+    dp.register_callback_query_handler(edit_person_info, lambda s: s.data == "edit_person")

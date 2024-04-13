@@ -29,7 +29,8 @@ cur.execute("""
         chatID INT,
         login TEXT,
         pass TEXT,
-        token TEXT
+        token TEXT,
+        page INT
     )
 """)
 
