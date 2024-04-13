@@ -76,7 +76,7 @@ async def check_login(msg: types.Message, state: FSMContext) -> None:
 
     is_authenticated = authentication(email, password)
     if is_authenticated:
-        set_data('users','token', is_authenticated, 'chatID', msg.chat.id)
+        set_data('users', 'token', is_authenticated, 'chatID', msg.chat.id)
         sent_message = await msg.bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
                                                        text="Аутентификация успешна.",
                                                        reply_markup=start_keyboards.edit_info())
@@ -91,6 +91,27 @@ async def check_login(msg: types.Message, state: FSMContext) -> None:
     await msg.delete()
 
 
+async def check_signin(msg: types.Message):
+    """
+       Функция, которая отвечает за проверку вводимых данных. В случае, если
+       email и password введены верно, мы полуаем токен и переходим к изменению
+       страницы. В ином случае бот сообщает нам, что данные не корректны
+       и предлагает войти в аккаунт снова
+
+       :param msg: Объект сообщения
+       """
+
+    email = get_data("users", "login", "chatID", msg.message.chat.id)[0][0]
+    password = get_data("users", "pass", "chatID", msg.message.chat.id)[0][0]
+
+    is_authenticated = authentication(email, password)
+    if is_authenticated:
+        set_data('users', 'token', is_authenticated, 'chatID', msg.message.chat.id)
+        await msg.message.edit_text("Вход произведен успешно", reply_markup=start_keyboards.edit_info())
+    else:
+        await msg.message.edit_text("Вхрд не выполнен. Поробуйте авторизоваться заново", reply_markup=start_keyboards.start_button())
+
+
 def start_handler(dp: Dispatcher) -> None:
     """
      Функция, в которой мы описываем, как вызываются функции для взаимодействия
@@ -101,3 +122,4 @@ def start_handler(dp: Dispatcher) -> None:
                                        lambda s: s.data == "login")
     dp.register_message_handler(get_pass, state="waiting_get_pass")
     dp.register_message_handler(check_login, state="login_site")
+    dp.register_callback_query_handler(check_signin, lambda s: s.data == "signin")

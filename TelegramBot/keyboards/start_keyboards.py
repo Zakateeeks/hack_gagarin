@@ -11,7 +11,8 @@ def start_button() -> InlineKeyboardMarkup:
     """
     keyboard = InlineKeyboardMarkup(row_width=1)
     keyboard.add(
-        InlineKeyboardButton(text="Войти", callback_data="login")
+        InlineKeyboardButton(text="Авторизоваться", callback_data="login"),
+        InlineKeyboardButton(text="Войти", callback_data="signin")
     )
 
     return keyboard
