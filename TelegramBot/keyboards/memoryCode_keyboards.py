@@ -28,7 +28,6 @@ def choice_method() -> InlineKeyboardMarkup:
     """
     keyboard = InlineKeyboardMarkup(row_width=1)
     keyboard.add(
-        InlineKeyboardButton(text="Ввести все поля вручную", callback_data="edit_yourself"),
         InlineKeyboardButton(text="Использовать помощь AI", callback_data="edit_ai")
     )
 

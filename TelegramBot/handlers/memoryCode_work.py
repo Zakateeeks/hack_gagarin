@@ -1,3 +1,5 @@
+import json
+
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 
@@ -197,8 +199,18 @@ async def ai_generate_epitaph(msg: types.Message) -> None:
 
     js_string = personal_info.get_json_string()
     new_js_str = personal_info.replace_user_texts(js_string, new_ai_text)
-    ai_agents_epitaph.gpt()
+    ai_ep = ai_agents_epitaph.gpt(new_js_str)
+    ai_an = ai_agents_epitaph.analyzerAgentGpt(ai_ep)
+    result_json = json.loads(ai_an)
+    text = result_json['result']['alternatives'][0]['message']['text']
 
+    if len(text) > 300:
+        ai_an = ai_agents_epitaph.rewriterAgentGpt(ai_an)
+        ai_ahalyser = ai_agents_epitaph.analyzerAgentGpt(ai_an)
+        result_json = json.loads(ai_ahalyser)
+        text = result_json['result']['alternatives'][0]['message']['text']
+
+    await msg.message.edit_text(text)
 
 
 def memoryCode_handler(dp: Dispatcher) -> None:
