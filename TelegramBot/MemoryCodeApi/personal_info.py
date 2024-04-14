@@ -57,6 +57,31 @@ def get_full_info(access_token: str, page: int) -> str | None:
         print("Ошибка при выполнении запроса. Код ошибки:", response.status_code)
         return None
 
+def get_full_info_as_js(access_token: str, page: int) -> str | None:
+    """
+    Функция для get запроса через API, получает информацию со
+    всей страницы
+
+    :param access_token: Токен доступа, получается после
+    успешной авторизации и записывается в БД
+    :param page: Номер страницы
+    :return: Список страниц с нужной ифнормацией
+    """
+    url = "https://mc.dev.rand.agency/api/cabinet/individual-pages"
+
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()[page]
+
+    else:
+        print("Ошибка при выполнении запроса. Код ошибки:", response.status_code)
+        return None
 
 def pars_info(jtext):
     result = "Основная информация:\n"

@@ -3,7 +3,7 @@ import json
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 
-from TelegramBot.MemoryCodeApi import personal_info
+from TelegramBot.MemoryCodeApi import personal_info, main
 from TelegramBot.DataBase import base_workDB
 from TelegramBot.bot_configure import bot
 from TelegramBot.keyboards import memoryCode_keyboards
@@ -210,7 +210,8 @@ async def ai_generate_epitaph(msg: types.Message) -> None:
         result_json = json.loads(ai_ahalyser)
         text = result_json['result']['alternatives'][0]['message']['text']
 
-    await msg.message.edit_text(text)
+    main.fill_data(text, token[0][0], page[0][0] - 1)
+    await msg.message.edit_text(text, reply_markup=memoryCode_keyboards.regenerate())
 
 
 def memoryCode_handler(dp: Dispatcher) -> None:
@@ -230,4 +231,4 @@ def memoryCode_handler(dp: Dispatcher) -> None:
     dp.register_message_handler(study, state="study_info")
     dp.register_message_handler(job, state="job_info")
     dp.register_message_handler(award, state="award_info")
-    dp.register_callback_query_handler(ai_generate_epitaph, lambda s: s.data == "edit_ai")
+    dp.register_callback_query_handler(ai_generate_epitaph, lambda s: s.data in ["edit_ai", "regenerate"])

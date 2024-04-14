@@ -32,3 +32,11 @@ def choice_method() -> InlineKeyboardMarkup:
     )
 
     return keyboard
+
+def regenerate() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    keyboard.add(
+        InlineKeyboardButton(text="Перегенерировать", callback_data="regenerate")
+    )
+
+    return keyboard

@@ -38,7 +38,8 @@ cur.execute("""
         nationally TEXT,
         study TEXT,
         job TEXT,
-        award TEXT
+        award TEXT,
+        epit TEXT
     )
 """)
 
