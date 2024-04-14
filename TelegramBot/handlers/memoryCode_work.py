@@ -5,6 +5,7 @@ from TelegramBot.MemoryCodeApi import personal_info
 from TelegramBot.DataBase import base_workDB
 from TelegramBot.bot_configure import bot
 from TelegramBot.keyboards import memoryCode_keyboards
+from Epitaph import ai_agents_epitaph
 
 
 async def choice_page(msg: types.Message, state: FSMContext) -> None:
@@ -66,16 +67,138 @@ async def person_choice(msg: types.Message, state: FSMContext) -> None:
     await state.finish()
 
 
-async def edit_person_info(msg: types.Message) -> None:
-    """
-    В этой функии мы должны начинать менять информацию
-    страницы, которую выбрал пользователь
+async def brief_info(msg: types.Message, state: FSMContext) -> None:
+    text = "Введите место рождения"
+    sent_message = await bot.send_message(msg.message.chat.id, text)
 
-    :param msg: Объект сообщения (callback)
-    """
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.set_state("place_birth")
 
-    await msg.message.edit_text(text=msg.message.text, reply_markup=None)
-    await bot.send_message(text="Выберите как Вы хотите заполнить текущую страницу",chat_id=msg.message.chat.id, reply_markup=memoryCode_keyboards.choice_method())
+
+async def place_birth(msg: types.Message, state: FSMContext) -> None:
+    text = "Введите место смерти"
+    base_workDB.set_data('users', 'place_birth', msg.text, 'chatID', msg.chat.id)
+
+    await msg.delete()
+    data = await state.get_data()
+    sent_message_id = data.get("sent_message_id")
+    sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
+                                               text=text)
+
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.set_state("place_die")
+
+
+async def place_die(msg: types.Message, state: FSMContext) -> None:
+    text = 'Есть ли дети? Если да - то укажите имя, если нет - то напишите "детей нет"'
+    base_workDB.set_data('users', 'place_die', msg.text, 'chatID', msg.chat.id)
+
+    await msg.delete()
+    data = await state.get_data()
+    sent_message_id = data.get("sent_message_id")
+    sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
+                                               text=text)
+
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.set_state("child_info")
+
+
+async def child(msg: types.Message, state: FSMContext) -> None:
+    text = 'Есть ли супруг или супруга? Информация укажите, как в предудущем пункте)'
+    base_workDB.set_data('users', 'child', msg.text, 'chatID', msg.chat.id)
+
+    await msg.delete()
+    data = await state.get_data()
+    sent_message_id = data.get("sent_message_id")
+    sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
+                                               text=text)
+
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.set_state("spouse_info")
+
+
+async def spouse(msg: types.Message, state: FSMContext) -> None:
+    text = 'Укажите гражданство'
+    base_workDB.set_data('users', 'spouse', msg.text, 'chatID', msg.chat.id)
+
+    await msg.delete()
+    data = await state.get_data()
+    sent_message_id = data.get("sent_message_id")
+    sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
+                                               text=text)
+
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.set_state("nationaly_info")
+
+
+async def nationaly(msg: types.Message, state: FSMContext) -> None:
+    text = 'Укажите образование'
+    base_workDB.set_data('users', 'nationally', msg.text, 'chatID', msg.chat.id)
+
+    await msg.delete()
+    data = await state.get_data()
+    sent_message_id = data.get("sent_message_id")
+    sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
+                                               text=text)
+
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.set_state("study_info")
+
+
+async def study(msg: types.Message, state: FSMContext) -> None:
+    text = 'Укажите род деятельности'
+    base_workDB.set_data('users', 'study', msg.text, 'chatID', msg.chat.id)
+
+    await msg.delete()
+    data = await state.get_data()
+    sent_message_id = data.get("sent_message_id")
+    sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
+                                               text=text)
+
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.set_state("job_info")
+
+
+async def job(msg: types.Message, state: FSMContext) -> None:
+    text = 'Укажите награды/премии и достижения'
+    base_workDB.set_data('users', 'job', msg.text, 'chatID', msg.chat.id)
+
+    await msg.delete()
+    data = await state.get_data()
+    sent_message_id = data.get("sent_message_id")
+    sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
+                                               text=text)
+
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.set_state("award_info")
+
+
+async def award(msg: types.Message, state: FSMContext) -> None:
+    text = 'Как заполянем дальше?'
+    base_workDB.set_data('users', 'award', msg.text, 'chatID', msg.chat.id)
+
+    await msg.delete()
+    data = await state.get_data()
+    sent_message_id = data.get("sent_message_id")
+    sent_message = await bot.edit_message_text(chat_id=msg.chat.id, message_id=sent_message_id,
+                                               text=text, reply_markup=memoryCode_keyboards.choice_method())
+
+    await state.update_data(sent_message_id=sent_message.message_id)
+    await state.finish()
+
+
+async def ai_generate_epitaph(msg: types.Message) -> None:
+    job = base_workDB.get_data("users", "job", "chatID", msg.message.chat.id)[0][0]
+    awards = base_workDB.get_data("users", "award", "chatID", msg.message.chat.id)[0][0]
+    page = base_workDB.get_data("users", "page", "chatID", msg.message.chat.id)
+    token = base_workDB.get_data("users", "token", "chatID", msg.message.chat.id)
+    full_name = personal_info.get_full_info(token[0][0], page[0][0] - 1).split('\n')[1][5:]
+    new_ai_text = [full_name, job, awards]
+
+    js_string = personal_info.get_json_string()
+    new_js_str = personal_info.replace_user_texts(js_string, new_ai_text)
+    ai_agents_epitaph.gpt()
+
 
 
 def memoryCode_handler(dp: Dispatcher) -> None:
@@ -86,4 +209,13 @@ def memoryCode_handler(dp: Dispatcher) -> None:
     dp.register_callback_query_handler(choice_page,
                                        lambda s: s.data == "choice_page")
     dp.register_message_handler(person_choice, state="person_choice")
-    dp.register_callback_query_handler(edit_person_info, lambda s: s.data == "edit_person")
+    dp.register_callback_query_handler(brief_info, lambda s: s.data == "edit_person")
+    dp.register_message_handler(place_birth, state="place_birth")
+    dp.register_message_handler(place_die, state="place_die")
+    dp.register_message_handler(child, state="child_info")
+    dp.register_message_handler(spouse, state="spouse_info")
+    dp.register_message_handler(nationaly, state="nationaly_info")
+    dp.register_message_handler(study, state="study_info")
+    dp.register_message_handler(job, state="job_info")
+    dp.register_message_handler(award, state="award_info")
+    dp.register_callback_query_handler(ai_generate_epitaph, lambda s: s.data == "edit_ai")

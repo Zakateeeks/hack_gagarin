@@ -11,8 +11,8 @@ def edit_or_ok() -> InlineKeyboardMarkup:
     """
     keyboard = InlineKeyboardMarkup(row_width=2)
     keyboard.add(
-        InlineKeyboardButton(text="Всё верно", callback_data="edit_person"),
-        InlineKeyboardButton(text="Заполнить эту страницу", callback_data="choice_page")
+        InlineKeyboardButton(text="Всё верно", callback_data="choice_page"),
+        InlineKeyboardButton(text="Заполнить эту страницу", callback_data="edit_person")
     )
 
     return keyboard
@@ -24,7 +24,7 @@ def choice_method() -> InlineKeyboardMarkup:
     пользователь выбирает либо вручную, либо
     использовать AI
 
-        :return
+    :return: inline клавиатура
     """
     keyboard = InlineKeyboardMarkup(row_width=1)
     keyboard.add(

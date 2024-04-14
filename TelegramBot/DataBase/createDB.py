@@ -30,7 +30,15 @@ cur.execute("""
         login TEXT,
         pass TEXT,
         token TEXT,
-        page INT
+        page INT,
+        place_birth TEXT,
+        place_die TEXT,
+        child TEXT,
+        spouse TEXT,
+        nationally TEXT,
+        study TEXT,
+        job TEXT,
+        award TEXT
     )
 """)
 

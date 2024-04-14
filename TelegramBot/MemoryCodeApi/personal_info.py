@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 def get_fullname_pages(access_token: str) -> list | None:
@@ -63,7 +64,7 @@ def pars_info(jtext):
     result += f'Фамилия: {is_find(jtext, 'surname')}\n'
     result += f'Отчество: {is_find(jtext, 'patronym')}\n'
     result += f'Дата рождения: {is_find(jtext, 'birthday_at')}\n'
-    result += f'Дата рождения: {is_find(jtext, 'died_at')}\n\n'
+    result += f'Дата Смерти: {is_find(jtext, 'died_at')}\n\n'
     result += f'Эпитафия: {is_find(jtext, 'epitaph')}\n'
     result += f'Автор: {is_find(jtext, 'author_epitaph')}\n\n'
     result += "Биография:\n"
@@ -80,4 +81,60 @@ def is_find(jtext, key):
         return "Не заполнено"
 
 
-print(get_full_info('2631|xCCLQ2OlGZYTLvxAHbrHISfIzljP4hnOLU2bz9aL', 0))
+def replace_user_texts(json_string, new_texts):
+    data = json.loads(json_string)
+
+    i = 0
+    for message in data['messages']:
+        if message['role'] == 'user':
+            if i < len(new_texts):
+                message['text'] = new_texts[i]
+                i += 1
+
+    return json.dumps(data, indent=4)
+
+
+def get_json_string() -> str:
+    # Пример использования:
+    json_string = '''
+    {
+        "modelUri": "gpt://b1gu7e6h3d9j6nhp9nmt/yandexgpt-lite",
+        "completionOptions": {
+          "stream": false,
+          "temperature": 0.6,
+          "maxTokens": "2000"
+        },
+        "messages": [
+          {
+            "role": "system",
+            "text": "На основе предоставленного контекста, создай хороший краткий текст одной эпитафии. В ответе напиши одну эпитафию. Не используй markdown."
+          },
+          {
+            "role": "assistant",
+            "text": "Как звали человека, о котором вы хотите создать страницу памяти?"
+          },
+          {
+            "role": "user",
+            "text": "Светлана"
+          },
+          {
+            "role": "assistant",
+            "text": "Что можно сказать о профессии или основном занятии человека?"
+          },
+          {
+            "role": "user",
+            "text": "Светлана была писателем, она внесла значительный вклад в культуру своего города."
+          },
+          {
+            "role": "assistant",
+            "text": "Какие достижения были у этого человека в его жизни? Какие награды он получал?"
+          },
+          {
+            "role": "user",
+            "text": "Больше всего в жизни Светлана ценила семью и дружбу. Она уделял много времени своим близким и всегда старалась поддерживать друзей в трудные моменты."
+          }
+        ]
+    }
+    '''
+
+    return json_string
