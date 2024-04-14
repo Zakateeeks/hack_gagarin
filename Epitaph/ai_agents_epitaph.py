@@ -3,11 +3,11 @@ import json
 import os
 import time
 
-def gpt(auth_headers):
+
+def gpt(data):
     url = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion'
 
-    with open('body.json', 'r', encoding='utf-8') as f:
-        data = json.dumps(json.load(f))
+    auth_headers = create_auth_headers()
     resp = requests.post(url, headers=auth_headers, data=data)
 
     if resp.status_code != 200:
@@ -20,14 +20,15 @@ def gpt(auth_headers):
     return resp.text
 
 
-def analyzerAgentGpt(auth_headers, prev_result):
+def analyzerAgentGpt(prev_result):
+    auth_headers = create_auth_headers()
     # Преобразуем строку prev_result в JSON объект
     prev_result_json = json.loads(prev_result)
     # Извлекаем текст ответа
     analyzer_text = prev_result_json['result']['alternatives'][0]['message']['text']
 
     # Загружаем содержимое bodyAnalyzer.json
-    with open('bodyAnalyzer.json', 'r', encoding='utf-8') as f:
+    with open('../Epitaph/bodyAnalyzer.json', 'r', encoding='utf-8') as f:
         body_data = json.load(f)
 
     # Добавляем текст из analyzerAgentGpt в messages bodyAnalyzer.json
@@ -53,14 +54,16 @@ def analyzerAgentGpt(auth_headers, prev_result):
 
     return resp.text
 
-def rewriterAgentGpt(auth_headers, prev_result):
+
+def rewriterAgentGpt(prev_result):
     # Преобразуем строку prev_result в JSON объект
     prev_result_json = json.loads(prev_result)
+    auth_headers = create_auth_headers()
     # Извлекаем текст ответа
     analyzer_text = prev_result_json['result']['alternatives'][0]['message']['text']
 
     # Загружаем содержимое bodyRewriter.json
-    with open('bodyRewriter.json', 'r', encoding='utf-8') as f:
+    with open('../Epitaph/bodyRewriter.json', 'r', encoding='utf-8') as f:
         body_data = json.load(f)
 
     # Добавляем текст в messages bodyRewriter.json
@@ -87,7 +90,7 @@ def rewriterAgentGpt(auth_headers, prev_result):
     return resp.text
 
 
-if __name__ == "__main__":
+def create_auth_headers():
     with open('../credentials.json', 'r') as f:
         data = json.load(f)
     if data.get('IAM_TOKEN') is not None:
@@ -108,29 +111,7 @@ if __name__ == "__main__":
         }
     else:
         print(
-            'Please save either an IAM token or an API key into a corresponding `IAM_TOKEN` or `API_KEY` environment variable.')
+            'Please save either an IAM token or an API key into a corresponding IAM_TOKEN or API_KEY environment variable.')
         exit()
 
-    firts_epitafia = gpt(headers)
-    print(firts_epitafia)
-
-    time.sleep(0.5)
-    print('\n')
-    result = analyzerAgentGpt(headers, firts_epitafia)
-    print(result)
-
-    # Преобразуем строку prev_result в JSON объект
-    result_json = json.loads(result)
-    # Извлекаем текст ответа
-    text = result_json['result']['alternatives'][0]['message']['text']
-
-    print(len(text))
-
-    if len(text) > 300:
-        time.sleep(0.5)
-        a = rewriterAgentGpt(headers, result)
-        print(a)
-        new_json = json.loads(a)
-        new_text = new_json['result']['alternatives'][0]['message']['text']
-        print(len(new_text))
-
+    return headers
