@@ -93,14 +93,18 @@ if __name__ == "__main__":
     if data.get('IAM_TOKEN') is not None:
         print("IAM_TOKEN was found")
         iam_token = data['IAM_TOKEN']
+        folder_id = data["FOLDER_ID"]
         headers = {
             'Authorization': f'Bearer {iam_token}',
+            "x-folder-id": f"{folder_id}",
         }
     elif data.get('API_KEY') is not None:
         print("API_KEY was found")
         api_key = data['API_KEY']
+        folder_id = data["FOLDER_ID"]
         headers = {
             'Authorization': f'Api-Key {api_key}',
+            "x-folder-id": f"{folder_id}",
         }
     else:
         print(
